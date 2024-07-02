@@ -3,9 +3,9 @@
   <div class="home">
     <h1>Pet Rock Clicker</h1>
     <p>Coins: {{ coins }}</p>
-    <Rock @increment="incrementCoins" />
+    <Rock :skin="currentSkin" @increment="incrementCoins" />
     <button @click="openShop">Open Shop</button>
-    <Shop :coins="coins" @buy-upgrade="buyUpgrade" ref="shop" />
+    <Shop :coins="coins" @buy-upgrade="buyUpgrade" @buy-skin="buySkin" ref="shop" />
   </div>
 </template>
 
@@ -23,13 +23,15 @@ export default {
     return {
       coins: 0,
       baseCoinValue: 1,
-      multiplier: 1, // Start with a base multiplier of 1
+      multiplier: 1,
       autoclickerInterval: null,
+      currentSkin: "default_skin.png",
+      currentBaseCoinValue: 1,
     };
   },
   methods: {
     incrementCoins() {
-      this.coins += this.baseCoinValue * this.multiplier;
+      this.coins += this.currentBaseCoinValue * this.multiplier;
     },
     openShop() {
       this.$refs.shop.openShop();
@@ -38,13 +40,20 @@ export default {
       if (this.coins >= upgrade.cost) {
         this.coins -= upgrade.cost;
         if (upgrade.type === "multiplier") {
-          this.multiplier += upgrade.multiplier; // Correctly add to the multiplier
+          this.multiplier += upgrade.multiplier;
         } else if (upgrade.type === "autoclicker") {
           this.activateAutoclicker(upgrade.value);
         } else if (upgrade.type === "music") {
           this.playMusic(upgrade.value);
         }
-        // Handle more upgrade types here
+      }
+    },
+    buySkin(skin) {
+      if (this.coins >= skin.cost) {
+        this.coins -= skin.cost;
+        this.currentSkin = `/assets/${skin.image}`;
+        this.currentBaseCoinValue = skin.baseCoinValue;
+        this.multiplier = skin.multiplier;
       }
     },
     activateAutoclicker(clicksPerSecond) {
