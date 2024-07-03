@@ -1,4 +1,3 @@
-<!-- src/components/Shop.vue -->
 <template>
   <div class="shop" v-if="visible">
     <div class="shop-content">
@@ -21,10 +20,10 @@
           <ul>
             <li v-for="skin in skins" :key="skin.id">
               <div class="skin">
-                <img :src="`/assets/${skin.image}`" :alt="skin.name" class="skin-image"/>
+                <img :src="`${skin.image}`" :alt="skin.name" class="skin-image"/>
                 <span>{{ skin.name }}</span>
                 <span>{{ skin.cost }} coins</span>
-                <button @click="buySkin(skin)" :disabled="coins < skin.cost">Buy</button>
+                <button @click="buySkin(skin)" :disabled="coins < skin.cost || purchasedSkins.has(skin.id)">Buy</button>
               </div>
             </li>
           </ul>
@@ -39,7 +38,11 @@
 export default {
   name: "Shop",
   props: {
-    coins: Number
+    coins: Number,
+    purchasedSkins: {
+      type: Set,
+      default: () => new Set(),
+    }
   },
   data() {
     return {
@@ -47,18 +50,64 @@ export default {
       upgrades: [
         { id: 1, name: "+1 Multiplier", cost: 100, type: "multiplier", multiplier: 1 },
         { id: 2, name: "+2 Multiplier", cost: 300, type: "multiplier", multiplier: 2 },
-        { id: 3, name: "Autoclicker", cost: 500, type: "autoclicker", value: 1 },
-        { id: 4, name: "Background Music", cost: 200, type: "music", value: "background.mp3" },
-        // Add more functional upgrades here
+        { id: 3, name: "Autoclicker", cost: 5000, type: "autoclicker", value: 1 },
       ],
       skins: [
-        { id: 1, name: "Rock-OwO", cost: 1000, image: "Rock-OwO.png", type: "skin", baseCoinValue: 0.05, multiplier: 10 },
-        { id: 2, name: "Rock-Gamba", cost: 1500, image: "Rock-Gamba.png", type: "skin", baseCoinValue: 0.06, multiplier: 12 },
-        { id: 3, name: "Rock-Toga", cost: 2000, image: "Rock-Toga.png", type: "skin", baseCoinValue: 0.07, multiplier: 14 },
-        { id: 4, name: "Rock-Miku", cost: 2500, image: "Rock-Miku.png", type: "skin", baseCoinValue: 0.08, multiplier: 16 },
-        { id: 5, name: "Rock-Neko-1", cost: 3000, image: "Rock-Neko-1.png", type: "skin", baseCoinValue: 0.09, multiplier: 18 },
-        { id: 6, name: "Rock-Neko-2", cost: 3500, image: "Rock-Neko-2.png", type: "skin", baseCoinValue: 0.1, multiplier: 20 },
-        { id: 7, name: "Rock-Kafka", cost: 4000, image: "Rock-Kafka.png", type: "skin", baseCoinValue: 0.1, multiplier: 20 },
+        {id: 1, name: "Rock-OwO", cost: 1000, image: "Rock-OwO.png", type: "skin", baseCoinValue: 0.12, multiplier: 10},
+        {
+          id: 2,
+          name: "Rock-Gamba",
+          cost: 1500,
+          image: "Rock-Gamba.png",
+          type: "skin",
+          baseCoinValue: 0.14,
+          multiplier: 12
+        },
+        {
+          id: 3,
+          name: "Rock-Toga",
+          cost: 2000,
+          image: "Rock-Toga.png",
+          type: "skin",
+          baseCoinValue: 0.18,
+          multiplier: 14
+        },
+        {
+          id: 4,
+          name: "Rock-Miku",
+          cost: 2500,
+          image: "Rock-Miku.png",
+          type: "skin",
+          baseCoinValue:0.20,
+          multiplier: 16
+        },
+        {
+          id: 5,
+          name: "Rock",
+          cost: 3000,
+          image: "Rock-Neko-1.png",
+          type: "skin",
+          baseCoinValue: 0.22,
+          multiplier: 18
+        },
+        {
+          id: 6,
+          name: "Rock",
+          cost: 3500,
+          image: "Rock-Neko-2.png",
+          type: "skin",
+          baseCoinValue: 0.24,
+          multiplier: 20
+        },
+        {
+          id: 7,
+          name: "Rock-Kafka",
+          cost: 4000,
+          image: "Rock-Kafka.png",
+          type: "skin",
+          baseCoinValue: 0.30,
+          multiplier: 20
+        },
       ]
     };
   },

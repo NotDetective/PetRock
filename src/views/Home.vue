@@ -1,8 +1,7 @@
-<!-- src/views/Home.vue -->
 <template>
   <div class="home">
-    <h1>Pet Rock Clicker</h1>
-    <p>Coins: {{ coins }}</p>
+    <h1>Pet Rock Therapy</h1>
+    <p>Coins: {{ roundedCoins }}</p>
     <Rock :skin="currentSkin" @increment="incrementCoins" />
     <button @click="openShop">Open Shop</button>
     <Shop :coins="coins" @buy-upgrade="buyUpgrade" @buy-skin="buySkin" ref="shop" />
@@ -25,9 +24,15 @@ export default {
       baseCoinValue: 1,
       multiplier: 1,
       autoclickerInterval: null,
-      currentSkin: "default_skin.png",
-      currentBaseCoinValue: 1,
+      currentSkin: "pet-rock.png",
+      currentBaseCoinValue: 1 ,
+      purchasedSkins: new Set(),
     };
+  },
+  computed: {
+    roundedCoins() {
+      return this.coins.toFixed(1);
+    }
   },
   methods: {
     incrementCoins() {
@@ -49,11 +54,12 @@ export default {
       }
     },
     buySkin(skin) {
-      if (this.coins >= skin.cost) {
+      if (this.coins >= skin.cost && !this.purchasedSkins.has(skin.id)) {
         this.coins -= skin.cost;
-        this.currentSkin = `/assets/${skin.image}`;
+        this.currentSkin = skin.image;
         this.currentBaseCoinValue = skin.baseCoinValue;
         this.multiplier = skin.multiplier;
+        this.purchasedSkins.add(skin.id);
       }
     },
     activateAutoclicker(clicksPerSecond) {
